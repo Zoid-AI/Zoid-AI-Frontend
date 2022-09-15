@@ -1,0 +1,33 @@
+on: push
+name: Test
+
+jobs:
+    setup-node-modules:
+        name: Setup node modules for caching
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v3
+            - name: Setup Node and Caching
+              uses: actions/setup-node@v3
+              with:
+                  node-version: "16"
+                  cache: "npm"
+            - name: Install FrontEnd dependencies
+              run: npm ci
+
+    react-test:
+        needs: setup-node-modules
+        name: Test React
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v3
+            - name: Setup Node
+              uses: actions/setup-node@v3
+              with:
+                  node-version: "16"
+                  cache: "npm"
+            - run: npm ci
+            - name: Test FrontEnd
+              run: npm test
